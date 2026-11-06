@@ -1,218 +1,354 @@
 
-<!doctype html>
+<!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <title>HR-Tech | Talento y oportunidades</title>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit" async defer></script>
+
 <style>
 :root {
-  --ink:#171b49;
   --purple:#5540cf;
-  --muted:#667085;
-  --line:#e5e7f1;
+  --dark:#171b49;
+  --gray:#667085;
   --bg:#f8f9fd;
+  --border:#e5e7f1;
 }
 * {box-sizing:border-box}
 body {
   margin:0;
-  font:15px/1.5 system-ui,-apple-system,Segoe UI,sans-serif;
-  color:var(--ink);
   background:var(--bg);
+  color:var(--dark);
+  font-family:system-ui,Arial,sans-serif;
+  font-size:15px;
 }
 button,input,select,textarea {font:inherit}
 button {cursor:pointer}
-header {background:white;border-bottom:1px solid var(--line)}
-.wrap {max-width:1140px;margin:auto;padding:0 22px}
+header {
+  background:white;
+  border-bottom:1px solid var(--border);
+}
+.container {
+  max-width:1150px;
+  margin:auto;
+  padding:0 22px;
+}
 .nav {
-  height:76px;display:flex;align-items:center;
-  justify-content:space-between;gap:15px;
+  min-height:76px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:15px;
+  flex-wrap:wrap;
 }
-.brand {font-size:27px;font-weight:850;letter-spacing:-1px}
-.brand span {color:var(--purple)}
-.navlinks {display:flex;gap:20px}
-.navlinks button {
-  border:0;background:transparent;color:var(--ink);padding:10px;
+.logo {
+  font-size:28px;
+  font-weight:850;
+  letter-spacing:-1px;
 }
-.navlinks button.selected {
-  border-bottom:3px solid var(--purple);font-weight:750;
+.logo span {color:var(--purple)}
+nav {
+  display:flex;
+  gap:8px;
+  flex-wrap:wrap;
+}
+nav button {
+  background:transparent;
+  border:0;
+  padding:12px;
+  color:var(--dark);
+}
+nav button.active {
+  color:var(--purple);
+  font-weight:750;
+  border-bottom:3px solid var(--purple);
 }
 .btn {
-  border:0;border-radius:10px;background:var(--purple);
-  color:white;padding:12px 19px;font-weight:700;
+  background:var(--purple);
+  color:white;
+  border:0;
+  padding:12px 18px;
+  border-radius:10px;
+  font-weight:700;
 }
-.hero {background:white;border-bottom:1px solid var(--line)}
-.heroinner {
-  padding-top:60px;padding-bottom:60px;
-  display:grid;grid-template-columns:1.4fr 1fr;
-  gap:35px;align-items:center;
+.btn:disabled {opacity:.55;cursor:not-allowed}
+.secondary {
+  background:white;
+  color:var(--purple);
+  border:1px solid #c9c3f2;
 }
-.eyebrow {
-  font-weight:800;color:var(--purple);
-  text-transform:uppercase;font-size:12px;letter-spacing:2px;
+.hero {
+  background:white;
+  border-bottom:1px solid var(--border);
+  padding:55px 0;
 }
 .hero h1 {
-  font-size:clamp(34px,5vw,53px);
-  line-height:1.1;letter-spacing:-2px;margin:12px 0;
+  font-size:clamp(34px,5vw,52px);
+  letter-spacing:-2px;
+  line-height:1.12;
+  margin:12px 0;
 }
-.hero p {color:var(--muted);font-size:17px;max-width:500px}
-.art {
-  height:210px;border-radius:25px;
-  background:linear-gradient(145deg,#f3f0ff,#e8e8fc);
-  display:grid;place-items:center;
+.hero p {
+  font-size:17px;
+  color:var(--gray);
+  max-width:600px;
 }
-.art svg {width:75%;height:75%}
-.main {padding-top:30px;padding-bottom:65px}
-.tabs {display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap}
+.eyebrow {
+  color:var(--purple);
+  font-size:12px;
+  font-weight:800;
+  letter-spacing:2px;
+  text-transform:uppercase;
+}
+main {padding-top:30px!important;padding-bottom:65px!important}
+.tabs {
+  display:flex;
+  gap:10px;
+  flex-wrap:wrap;
+  margin-bottom:20px;
+}
 .tab {
-  border:1px solid var(--line);background:white;
-  padding:12px 18px;border-radius:10px;
-  font-weight:700;color:var(--ink);
+  background:white;
+  color:var(--dark);
+  border:1px solid var(--border);
+  border-radius:10px;
+  padding:12px 18px;
+  font-weight:700;
 }
-.tab.active {background:var(--purple);color:white}
+.tab.active {
+  background:var(--purple);
+  color:white;
+}
 .filters {
-  display:grid;grid-template-columns:2fr repeat(3,1fr);
-  gap:12px;background:white;border:1px solid var(--line);
-  border-radius:15px;padding:18px;
+  background:white;
+  border:1px solid var(--border);
+  padding:18px;
+  border-radius:15px;
+  display:grid;
+  grid-template-columns:2fr 1fr 1fr 1fr;
+  gap:12px;
 }
-.filters label,.form label {
-  display:grid;gap:6px;font-weight:700;font-size:13px;
+label {
+  display:grid;
+  gap:6px;
+  font-size:13px;
+  font-weight:700;
 }
-.filters input,.filters select,
-.form input,.form select,.form textarea {
-  width:100%;min-width:0;padding:11px 12px;
-  border:1px solid #d8dbe8;border-radius:8px;
-  background:white;color:var(--ink);
+input,select,textarea {
+  width:100%;
+  padding:11px;
+  border:1px solid #d8dbe8;
+  border-radius:8px;
+  background:white;
+  color:var(--dark);
 }
 .heading {
-  display:flex;justify-content:space-between;
-  align-items:center;gap:15px;margin:28px 0 18px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:15px;
+  margin:30px 0 20px;
 }
-.heading h2 {margin:0;font-size:24px}
-.heading p {margin:5px 0;color:var(--muted)}
-.results {display:grid;gap:11px}
-.result {
-  background:white;border:1px solid var(--line);
-  border-radius:13px;padding:20px;
-  display:flex;align-items:center;
-  justify-content:space-between;gap:16px;
+.heading h2 {margin:0}
+.heading p {color:var(--gray)}
+.results {display:grid;gap:12px}
+.card {
+  background:white;
+  border:1px solid var(--border);
+  border-radius:13px;
+  padding:22px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:18px;
 }
-.result h3 {margin:0 0 4px;font-size:18px}
-.result p {margin:0;color:var(--muted)}
-.meta {display:flex;flex-wrap:wrap;gap:7px;margin-top:11px}
+.card h3 {margin:0 0 6px}
+.card p {color:var(--gray);margin:5px 0}
+.pills {
+  display:flex;
+  gap:7px;
+  flex-wrap:wrap;
+  margin-top:12px;
+}
 .pill {
-  border-radius:30px;background:#f1efff;
-  color:#4e3cbd;padding:4px 10px;font-size:12px;
+  background:#f1efff;
+  color:#4e3cbd;
+  padding:5px 10px;
+  border-radius:30px;
+  font-size:12px;
 }
-.action {
-  display:inline-block;text-decoration:none;
-  color:var(--purple);border:1px solid #c9c3f2;
-  border-radius:9px;padding:10px 13px;
-  white-space:nowrap;font-weight:700;
+.link {
+  color:var(--purple);
+  text-decoration:none;
+  border:1px solid #c9c3f2;
+  border-radius:9px;
+  padding:10px 14px;
+  white-space:nowrap;
+  font-weight:700;
 }
 .empty {
-  padding:40px;text-align:center;background:white;
-  border:1px dashed #c8c8df;border-radius:12px;
-  color:var(--muted);
+  background:white;
+  border:1px dashed #c8c8df;
+  border-radius:12px;
+  padding:45px;
+  text-align:center;
+  color:var(--gray);
+}
+.stats-grid {
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:15px;
+}
+.stat {
+  background:white;
+  border:1px solid var(--border);
+  border-radius:13px;
+  padding:23px;
+}
+.stat strong {
+  display:block;
+  font-size:32px;
+  color:var(--purple);
+}
+.stat span {color:var(--gray)}
+.charts {
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:18px;
+  margin-top:20px;
+}
+.chart {
+  background:white;
+  border:1px solid var(--border);
+  border-radius:13px;
+  padding:22px;
+}
+.bar-row {margin:15px 0}
+.bar-head {
+  display:flex;
+  justify-content:space-between;
+  gap:10px;
+  font-size:13px;
+}
+.track {
+  background:#f0eef9;
+  height:10px;
+  border-radius:20px;
+  margin-top:6px;
+  overflow:hidden;
+}
+.fill {
+  background:var(--purple);
+  height:100%;
+  border-radius:20px;
 }
 .modal {
-  position:fixed;inset:0;background:#101331aa;
-  display:none;overflow-y:auto;padding:25px 12px;z-index:10;
+  display:none;
+  position:fixed;
+  inset:0;
+  background:#101331aa;
+  z-index:20;
+  overflow-y:auto;
+  padding:20px;
 }
 .modal.open {display:block}
 .dialog {
-  background:white;max-width:590px;
-  margin:20px auto;padding:28px;border-radius:18px;
+  background:white;
+  max-width:580px;
+  margin:25px auto;
+  padding:28px;
+  border-radius:18px;
 }
-.dialoghead {
-  display:flex;justify-content:space-between;align-items:center;
+.dialog-header {
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
 }
-.dialoghead h2 {margin:0}
 .close {
-  background:#f0f1f7;border:0;border-radius:8px;padding:8px 12px;
+  border:0;
+  background:#f0f1f7;
+  padding:8px 12px;
+  border-radius:8px;
 }
-.form {display:grid;gap:15px;margin-top:18px}
-.note {color:var(--muted);font-size:13px}
-.check {
-  display:flex!important;align-items:start;
-  gap:10px;font-weight:400!important;
+.form {
+  display:grid;
+  gap:15px;
+  margin-top:20px;
 }
-.check input {width:auto!important;margin-top:4px}
+.note {
+  color:var(--gray);
+  font-size:13px;
+}
 .hidden {display:none!important}
-footer {text-align:center;padding:25px;color:var(--muted)}
-@media(max-width:800px) {
-  .heroinner {grid-template-columns:1fr}
-  .art {display:none}
-  .filters {grid-template-columns:1fr 1fr}
-  .navlinks {display:none}
+.message {
+  color:var(--purple);
+  font-size:14px;
+  white-space:pre-wrap;
 }
-@media(max-width:560px) {
+.checkbox {
+  display:flex;
+  gap:10px;
+  align-items:flex-start;
+  font-weight:400;
+}
+.checkbox input {width:auto;margin-top:4px}
+footer {
+  text-align:center;
+  color:var(--gray);
+  padding:25px;
+}
+@media(max-width:850px) {
+  .filters {grid-template-columns:1fr 1fr}
+  .stats-grid {grid-template-columns:1fr 1fr}
+  .charts {grid-template-columns:1fr}
+}
+@media(max-width:600px) {
   .filters {grid-template-columns:1fr}
-  .result {align-items:start;flex-direction:column}
-  .heading {align-items:start;flex-direction:column}
-  .nav {height:65px}
-  .heroinner {padding-top:35px;padding-bottom:35px}
+  .card {flex-direction:column;align-items:flex-start}
+  .heading {flex-direction:column;align-items:flex-start}
+  .nav {padding:15px 0}
+  .stats-grid {grid-template-columns:1fr 1fr}
 }
 </style>
 </head>
+
 <body>
 
 <header>
-  <div class="wrap nav">
-    <div class="brand">HR<span>-Tech</span></div>
-    <nav class="navlinks">
-      <button id="navJobs" class="selected"
-        onclick="changeTab('jobs')">Búsquedas activas</button>
-      <button id="navTalent"
-        onclick="changeTab('talent')">Talento disponible</button>
-    </nav>
-    <button class="btn" onclick="openForm()" id="navPublish">
-      + Publicar búsqueda
-    </button>
-  </div>
+<div class="container nav">
+  <div class="logo">HR<span>-Tech</span></div>
+  <nav>
+    <button id="navJobs" class="active" onclick="changeTab('jobs')">Búsquedas activas</button>
+    <button id="navTalent" onclick="changeTab('talent')">Talento disponible</button>
+    <button id="navStats" onclick="changeTab('stats')">Ver estadísticas</button>
+  </nav>
+  <button class="btn secondary" id="loginButton" onclick="openLogin()">Ingresar</button>
+</div>
 </header>
 
 <section class="hero">
-  <div class="wrap heroinner">
-    <div>
-      <div class="eyebrow">Comunidad profesional</div>
-      <h1>Talento y oportunidades<br>en un solo lugar.</h1>
-      <p>Compartí búsquedas laborales o hacé visible tu perfil profesional.
-      Simple, directo y sin intermediarios.</p>
-    </div>
-    <div class="art" aria-hidden="true">
-      <svg viewBox="0 0 320 210" fill="none">
-        <rect x="42" y="23" width="228" height="155" rx="13"
-          fill="white" stroke="#6B59DB" stroke-width="5"/>
-        <rect x="61" y="43" width="188" height="16" rx="8"
-          fill="#EDEAFF"/>
-        <circle cx="107" cy="101" r="23"
-          stroke="#6B59DB" stroke-width="6"/>
-        <path d="M69 150c8-26 68-26 76 0"
-          stroke="#6B59DB" stroke-width="6" stroke-linecap="round"/>
-        <path d="M170 95h64M170 115h52M170 135h37"
-          stroke="#B6ADEE" stroke-width="8" stroke-linecap="round"/>
-        <circle cx="253" cy="156" r="28"
-          fill="#EEEAFE" stroke="#6B59DB" stroke-width="6"/>
-        <path d="m272 177 24 23"
-          stroke="#6B59DB" stroke-width="9" stroke-linecap="round"/>
-      </svg>
-    </div>
-  </div>
+<div class="container">
+  <div class="eyebrow">Comunidad profesional</div>
+  <h1>Talento y oportunidades<br>en un solo lugar.</h1>
+  <p>Compartí búsquedas laborales, encontrá oportunidades y hacé visible tu perfil profesional.</p>
+</div>
 </section>
 
-<main class="wrap main">
-  <div class="tabs">
-    <button id="tabJobs" class="tab active"
-      onclick="changeTab('jobs')">▣ Búsquedas activas</button>
-    <button id="tabTalent" class="tab"
-      onclick="changeTab('talent')">♙ Talento disponible</button>
-  </div>
+<main class="container">
 
+<div class="tabs">
+  <button id="tabJobs" class="tab active" onclick="changeTab('jobs')">Búsquedas activas</button>
+  <button id="tabTalent" class="tab" onclick="changeTab('talent')">Talento disponible</button>
+  <button id="tabStats" class="tab" onclick="changeTab('stats')">Ver estadísticas</button>
+</div>
+
+<div id="listSection">
   <div class="filters">
     <label>Buscar
-      <input id="search" placeholder="Puesto, empresa o palabra clave"
-        oninput="render()">
+      <input id="search" placeholder="Buscar publicaciones" oninput="render()">
     </label>
     <label>Ubicación
       <select id="location" onchange="render()"></select>
@@ -233,32 +369,74 @@ footer {text-align:center;padding:25px;color:var(--muted)}
   <div class="heading">
     <div>
       <h2 id="sectionTitle">Búsquedas activas</h2>
-      <p id="count">0 publicaciones</p>
+      <p id="count">Cargando publicaciones...</p>
     </div>
-    <button class="btn" id="publishBtn" onclick="openForm()">
-      + Publicar búsqueda
-    </button>
+    <button class="btn" id="publishButton" onclick="openPublish()">+ Publicar búsqueda</button>
   </div>
   <div id="results" class="results"></div>
+</div>
+
+<div id="statsSection" class="hidden">
+  <div class="heading">
+    <div>
+      <h2>Estadísticas de HR-Tech</h2>
+      <p>Datos agregados de publicaciones vigentes</p>
+    </div>
+  </div>
+  <div class="stats-grid">
+    <div class="stat"><strong id="totalJobs">0</strong><span>Búsquedas activas</span></div>
+    <div class="stat"><strong id="totalTalent">0</strong><span>Perfiles disponibles</span></div>
+    <div class="stat"><strong id="totalProvinces">0</strong><span>Provincias con actividad</span></div>
+    <div class="stat"><strong id="totalPosts">0</strong><span>Publicaciones vigentes</span></div>
+  </div>
+
+  <div class="charts">
+    <div class="chart"><h3>Búsquedas por provincia</h3><div id="jobsProvince"></div></div>
+    <div class="chart"><h3>Perfiles por provincia</h3><div id="talentProvince"></div></div>
+    <div class="chart"><h3>Puestos más publicados</h3><div id="jobsPosition"></div></div>
+    <div class="chart"><h3>Perfiles por puesto</h3><div id="talentPosition"></div></div>
+    <div class="chart"><h3>Búsquedas por seniority</h3><div id="jobsSeniority"></div></div>
+    <div class="chart"><h3>Perfiles por seniority</h3><div id="talentSeniority"></div></div>
+    <div class="chart"><h3>Búsquedas por modalidad</h3><div id="jobsModality"></div></div>
+    <div class="chart"><h3>Perfiles por modalidad</h3><div id="talentModality"></div></div>
+  </div>
+</div>
+
 </main>
 
-<div class="modal" id="modal" role="dialog"
-  aria-modal="true" aria-labelledby="formTitle">
+<div class="modal" id="loginModal">
   <div class="dialog">
-    <div class="dialoghead">
-      <h2 id="formTitle">Publicar búsqueda</h2>
-      <button class="close" onclick="closeForm()"
-        aria-label="Cerrar">✕</button>
+    <div class="dialog-header">
+      <h2>Ingresar a HR-Tech</h2>
+      <button class="close" onclick="closeLogin()">✕</button>
     </div>
-    <p class="note">La publicación vence automáticamente a los 60 días.</p>
+    <p class="note">Te enviaremos un enlace a tu correo para ingresar sin contraseña.</p>
+    <form class="form" id="loginForm">
+      <label>Correo electrónico
+        <input type="email" id="loginEmail" required placeholder="tu@email.com">
+      </label>
+      <div id="captcha"></div>
+      <button class="btn" type="submit" id="sendLink">Enviar enlace de acceso</button>
+      <p class="message" id="loginMessage"></p>
+    </form>
+  </div>
+</div>
+
+<div class="modal" id="publishModal">
+  <div class="dialog">
+    <div class="dialog-header">
+      <h2 id="formTitle">Publicar búsqueda</h2>
+      <button class="close" onclick="closePublish()">✕</button>
+    </div>
+    <p class="note">La publicación tendrá una vigencia de 60 días.</p>
 
     <form class="form" id="publishForm">
       <label id="nameLabel">Puesto o título
-        <input id="name" required maxlength="100">
+        <input id="name" maxlength="100" required>
       </label>
 
       <label id="companyLabel">Empresa
-        <input id="company" required maxlength="100">
+        <input id="company" maxlength="100">
       </label>
 
       <label id="positionLabel" class="hidden">Puesto
@@ -282,7 +460,7 @@ footer {text-align:center;padding:25px;color:var(--muted)}
         </select>
       </label>
 
-      <label id="descriptionLabel">Descripción
+      <label id="descriptionLabel">Descripción de la búsqueda
         <textarea id="description" rows="4" maxlength="2000"></textarea>
       </label>
 
@@ -290,17 +468,13 @@ footer {text-align:center;padding:25px;color:var(--muted)}
         <input id="link" type="url" required placeholder="https://...">
       </label>
 
-      <label id="emailLabel">Correo de contacto
-        <input id="email" type="email">
-      </label>
-
-      <label class="check">
+      <label class="checkbox">
         <input type="checkbox" id="consent" required>
-        Confirmo que tengo autorización para publicar esta información
-        y acepto que sea visible públicamente.
+        Confirmo que tengo autorización para publicar esta información.
       </label>
 
-      <button class="btn" type="submit">Publicar por 60 días</button>
+      <button class="btn" type="submit" id="submitPost">Publicar por 60 días</button>
+      <p id="publishMessage" class="message"></p>
     </form>
   </div>
 </div>
@@ -308,285 +482,484 @@ footer {text-align:center;padding:25px;color:var(--muted)}
 <footer>HR-Tech · Talento y oportunidades · 2026</footer>
 
 <script>
+const SUPABASE_URL = "https://cgsnfsmtfjtaztjzctdyf.supabase.co";
+const SUPABASE_KEY = "sb_publishable_r1o0VzSuYgW91XM8JHkNvw_ucmoh4B3";
+const TURNSTILE_KEY = "0x4AAAAAAF2y8v-zQVJFjrHL";
+
 const PROVINCES = [
-  'Buenos Aires','CABA','Catamarca','Chaco','Chubut',
-  'Córdoba','Corrientes','Entre Ríos','Formosa','Jujuy',
-  'La Pampa','La Rioja','Mendoza','Misiones','Neuquén',
-  'Río Negro','Salta','San Juan','San Luis','Santa Cruz',
-  'Santa Fe','Santiago del Estero','Tierra del Fuego','Tucumán'
+  "Buenos Aires","CABA","Catamarca","Chaco","Chubut",
+  "Córdoba","Corrientes","Entre Ríos","Formosa","Jujuy",
+  "La Pampa","La Rioja","Mendoza","Misiones","Neuquén",
+  "Río Negro","Salta","San Juan","San Luis","Santa Cruz",
+  "Santa Fe","Santiago del Estero","Tierra del Fuego","Tucumán"
 ];
 
 const LEVELS = [
-  'Trainee','Junior','Semisenior','Senior','Lead','Manager'
+  "Trainee","Junior","Semisenior","Senior","Lead","Manager"
 ];
 
 const POSITIONS = [
-  'Administracion y Finanzas',
-  'People',
-  'Soporte tecnico',
-  'Infraestructura',
-  'Seguridad informatica',
-  'Software engineer',
-  'C Level',
-  'Sales',
-  'Customer Success',
-  'Marketing'
+  "Administracion y Finanzas",
+  "People",
+  "Soporte tecnico",
+  "Infraestructura",
+  "Seguridad informatica",
+  "Software engineer",
+  "C Level",
+  "Sales",
+  "Customer Success",
+  "Marketing"
 ];
 
-const KEY = 'hrtech_publications_v1';
-const VALIDITY = 60 * 86400000;
-let tab = 'jobs';
+let db = null;
+let currentUser = null;
+let tab = "jobs";
+let jobs = [];
+let talent = [];
+let captchaId = null;
 
-function options(id,items,first) {
-  const s = document.getElementById(id);
-  s.replaceChildren();
-  const o = document.createElement('option');
-  o.value = '';
-  o.textContent = first;
-  s.append(o);
-  items.forEach(v => {
-    const x = document.createElement('option');
-    x.value = v;
-    x.textContent = v;
-    s.append(x);
-  });
+function el(id) {
+  return document.getElementById(id);
 }
 
-options('location',PROVINCES,'Todas las ubicaciones');
-options('formLocation',PROVINCES,'Seleccionar ubicación');
-options('seniority',LEVELS,'Seniority');
-options('formSeniority',LEVELS,'Seleccionar seniority');
-options('position',POSITIONS,'Seleccionar puesto');
-
-function read() {
-  try {
-    const a = JSON.parse(localStorage.getItem(KEY) || '[]');
-    return Array.isArray(a) ? a : [];
-  } catch {
-    return [];
-  }
+function configured() {
+  return SUPABASE_KEY.startsWith("sb_publishable_")
+    && TURNSTILE_KEY.startsWith("0x");
 }
 
-function write(a) {
-  localStorage.setItem(KEY,JSON.stringify(a));
+function optionList(id, values, placeholder) {
+  const select = el(id);
+  select.replaceChildren();
+  select.add(new Option(placeholder,""));
+  values.forEach(v => select.add(new Option(v,v)));
 }
 
-function changeTab(t) {
-  tab = t;
-  ['Jobs','Talent'].forEach((x,i) => {
-    const on = i === 0 ? t === 'jobs' : t === 'talent';
-    document.getElementById('tab'+x).classList.toggle('active',on);
-    document.getElementById('nav'+x).classList.toggle('selected',on);
-  });
-  document.getElementById('sectionTitle').textContent =
-    t === 'jobs' ? 'Búsquedas activas' : 'Talento disponible';
-  document.getElementById('publishBtn').textContent =
-  document.getElementById('navPublish').textContent =
-    t === 'jobs' ? '+ Publicar búsqueda' : '+ Publicar perfil';
-  document.getElementById('search').value = '';
-  render();
-}
+optionList("location",PROVINCES,"Todas las ubicaciones");
+optionList("formLocation",PROVINCES,"Seleccionar ubicación");
+optionList("seniority",LEVELS,"Seniority");
+optionList("formSeniority",LEVELS,"Seleccionar seniority");
+optionList("position",POSITIONS,"Seleccionar puesto");
 
-function openForm() {
-  document.getElementById('publishForm').reset();
-  const talent = tab === 'talent';
-
-  document.getElementById('formTitle').textContent =
-    talent ? 'Publicar perfil' : 'Publicar búsqueda';
-  document.getElementById('nameLabel').firstChild.textContent =
-    talent ? 'Nombre profesional' : 'Puesto o título';
-
-  document.getElementById('companyLabel')
-    .classList.toggle('hidden',talent);
-  document.getElementById('company').required = !talent;
-
-  document.getElementById('positionLabel')
-    .classList.toggle('hidden',!talent);
-  document.getElementById('position').required = talent;
-
-  document.getElementById('descriptionLabel')
-    .classList.toggle('hidden',talent);
-  document.getElementById('description').required = !talent;
-
-  document.getElementById('emailLabel')
-    .classList.toggle('hidden',talent);
-
-  document.getElementById('linkLabel').firstChild.textContent =
-    talent ? 'Enlace a LinkedIn o portfolio' : 'Enlace para postularse';
-
-  document.getElementById('modal').classList.add('open');
-}
-
-function closeForm() {
-  document.getElementById('modal').classList.remove('open');
-}
-
-function node(tag,text,cls) {
+function safeText(tag,text,className) {
   const n = document.createElement(tag);
-  if(text !== undefined) n.textContent = text;
-  if(cls) n.className = cls;
+  n.textContent = text || "";
+  if(className) n.className = className;
   return n;
 }
 
-function render() {
-  const now = Date.now();
-  const data = read();
+function validURL(value) {
+  try {
+    const url = new URL(value);
+    return ["https:","http:"].includes(url.protocol);
+  } catch {
+    return false;
+  }
+}
 
-  const valid = data.filter(x =>
-    x &&
-    Number.isFinite(x.createdAt) &&
-    x.createdAt <= now &&
-    x.createdAt + VALIDITY > now
-  );
-
-  if(valid.length !== data.length) {
-    try { write(valid); } catch {}
+async function init() {
+  if(!configured()) {
+    el("results").append(
+      safeText("div","Configurá las claves públicas de Supabase y Turnstile en el código.","empty")
+    );
+    return;
   }
 
-  const q = document.getElementById('search').value
-    .toLocaleLowerCase('es').trim();
-  const loc = document.getElementById('location').value;
-  const lev = document.getElementById('seniority').value;
-  const mod = document.getElementById('modality').value;
+  if(!window.supabase) {
+    el("results").textContent = "No se pudo cargar Supabase.";
+    return;
+  }
 
-  const rows = valid.filter(x =>
-    x.type === tab &&
-    (!loc || x.location === loc) &&
-    (!lev || x.seniority === lev) &&
-    (!mod || x.modality === mod) &&
-    (!q || [
-      x.name,x.company,x.position,x.description,x.skills
-    ].join(' ').toLocaleLowerCase('es').includes(q))
-  ).sort((a,b) => b.createdAt-a.createdAt);
+  db = window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
 
-  document.getElementById('count').textContent =
-    rows.length + ' publicaciones disponibles';
+  const {data:{session}} = await db.auth.getSession();
+  currentUser = session?.user || null;
+  updateLogin();
 
-  const root = document.getElementById('results');
+  db.auth.onAuthStateChange((_event,session) => {
+    currentUser = session?.user || null;
+    updateLogin();
+  });
+
+  await loadData();
+}
+
+function updateLogin() {
+  el("loginButton").textContent =
+    currentUser ? "Salir" : "Ingresar";
+}
+
+async function loadData() {
+  if(!db) return;
+
+  const [jr,tr] = await Promise.all([
+    db.from("job_posts")
+      .select("id,title,company,province,seniority,modality,description,application_url,category,created_at,expires_at")
+      .eq("status","active")
+      .gt("expires_at",new Date().toISOString())
+      .order("created_at",{ascending:false})
+      .limit(1000),
+
+    db.from("talent_profiles")
+      .select("id,full_name,position,province,seniority,modality,profile_url,created_at,expires_at")
+      .eq("status","active")
+      .gt("expires_at",new Date().toISOString())
+      .order("created_at",{ascending:false})
+      .limit(1000)
+  ]);
+
+  if(jr.error || tr.error) {
+    el("results").textContent =
+      "No se pudieron cargar las publicaciones. Revisá la conexión y los permisos de Supabase.";
+    console.error(jr.error,tr.error);
+    return;
+  }
+
+  jobs = jr.data || [];
+  talent = tr.data || [];
+
+  render();
+  renderStats();
+}
+
+function changeTab(next) {
+  tab = next;
+
+  ["Jobs","Talent","Stats"].forEach((name,i) => {
+    const active = ["jobs","talent","stats"][i] === next;
+    el("tab"+name).classList.toggle("active",active);
+    el("nav"+name).classList.toggle("active",active);
+  });
+
+  el("statsSection").classList.toggle("hidden",next!=="stats");
+  el("listSection").classList.toggle("hidden",next==="stats");
+
+  if(next!=="stats") {
+    el("sectionTitle").textContent =
+      next==="jobs" ? "Búsquedas activas" : "Talento disponible";
+
+    el("publishButton").textContent =
+      next==="jobs" ? "+ Publicar búsqueda" : "+ Publicar perfil";
+
+    el("search").value = "";
+    render();
+  } else {
+    renderStats();
+  }
+}
+
+function render() {
+  if(tab==="stats") return;
+
+  const root = el("results");
   root.replaceChildren();
 
-  if(!rows.length) {
-    root.append(node(
-      'div',
-      'Todavía no hay publicaciones con estos filtros. ¡Podés crear la primera!',
-      'empty'
+  const q = el("search").value.toLowerCase().trim();
+  const province = el("location").value;
+  const seniority = el("seniority").value;
+  const modality = el("modality").value;
+
+  const data = tab==="jobs" ? jobs : talent;
+
+  const filtered = data.filter(item => {
+    const searchable = tab==="jobs"
+      ? [item.title,item.company,item.description,item.category]
+      : [item.full_name,item.position];
+
+    return (
+      (!q || searchable.join(" ").toLowerCase().includes(q)) &&
+      (!province || item.province===province) &&
+      (!seniority || item.seniority===seniority) &&
+      (!modality || item.modality===modality)
+    );
+  });
+
+  el("count").textContent =
+    filtered.length+" publicaciones disponibles";
+
+  if(!filtered.length) {
+    root.append(safeText(
+      "div",
+      "Todavía no hay publicaciones con estos filtros.",
+      "empty"
     ));
     return;
   }
 
-  rows.forEach(x => {
-    const card = node('article',undefined,'result');
-    const left = node('div');
+  filtered.forEach(item => {
+    const card = safeText("article","","card");
+    const left = safeText("div");
 
-    left.append(node(
-      'h3',
-      x.type === 'talent'
-        ? (x.position || x.company || 'Perfil profesional')
-        : x.name
-    ));
+    const title = tab==="jobs" ? item.title : item.position;
+    const subtitle = tab==="jobs" ? item.company : item.full_name;
 
-    left.append(node(
-      'p',x.type === 'talent' ? x.name : x.company
-    ));
+    left.append(safeText("h3",title));
+    left.append(safeText("p",subtitle));
 
-    const meta = node('div',undefined,'meta');
+    const pills = safeText("div","","pills");
 
     [
-      x.location,
-      x.seniority,
-      x.modality,
-      'Vence: ' +
-        new Date(x.createdAt+VALIDITY).toLocaleDateString('es-AR')
-    ].filter(Boolean).forEach(s =>
-      meta.append(node('span',s,'pill'))
-    );
+      item.province,
+      item.seniority,
+      item.modality,
+      "Vence: "+new Date(item.expires_at).toLocaleDateString("es-AR")
+    ].forEach(value => {
+      pills.append(safeText("span",value,"pill"));
+    });
 
-    left.append(meta);
+    left.append(pills);
 
-    if(x.type === 'jobs' && x.description) {
-      left.append(node('p',x.description));
+    if(tab==="jobs" && item.description) {
+      left.append(safeText("p",item.description));
     }
 
     card.append(left);
 
-    try {
-      const u = new URL(x.link);
-      if(['http:','https:'].includes(u.protocol)) {
-        const a = node(
-          'a',
-          x.type === 'jobs' ? 'Ver oportunidad ↗' : 'Ver perfil ↗',
-          'action'
-        );
-        a.href = u.href;
-        a.target = '_blank';
-        a.rel = 'noopener noreferrer';
-        card.append(a);
-      }
-    } catch {}
+    const url = tab==="jobs"
+      ? item.application_url
+      : item.profile_url;
+
+    if(validURL(url)) {
+      const a = safeText(
+        "a",
+        tab==="jobs" ? "Ver oportunidad ↗" : "Ver perfil ↗",
+        "link"
+      );
+      a.href = url;
+      a.target = "_blank";
+      a.rel = "noopener noreferrer";
+      card.append(a);
+    }
 
     root.append(card);
   });
 }
 
-document.getElementById('publishForm')
-  .addEventListener('submit',e => {
-    e.preventDefault();
+function countBy(data,field) {
+  const counts = {};
+  data.forEach(item => {
+    const value = item[field] || "Sin especificar";
+    counts[value] = (counts[value] || 0)+1;
+  });
+  return Object.entries(counts)
+    .sort((a,b) => b[1]-a[1]);
+}
 
-    let u;
-    try {
-      u = new URL(document.getElementById('link').value.trim());
-      if(!['http:','https:'].includes(u.protocol)) throw Error();
-    } catch {
-      alert('Ingresá un enlace válido que comience con https://');
+function drawBars(id,data) {
+  const root = el(id);
+  root.replaceChildren();
+
+  if(!data.length) {
+    root.append(safeText("p","Sin datos disponibles.","note"));
+    return;
+  }
+
+  const max = Math.max(...data.map(x=>x[1]));
+
+  data.slice(0,10).forEach(([label,value]) => {
+    const row = safeText("div","","bar-row");
+    const head = safeText("div","","bar-head");
+    head.append(safeText("span",label));
+    head.append(safeText("strong",String(value)));
+
+    const track = safeText("div","","track");
+    const fill = safeText("div","","fill");
+    fill.style.width = (value/max*100)+"%";
+    track.append(fill);
+
+    row.append(head,track);
+    root.append(row);
+  });
+}
+
+function renderStats() {
+  el("totalJobs").textContent = jobs.length;
+  el("totalTalent").textContent = talent.length;
+  el("totalPosts").textContent = jobs.length+talent.length;
+
+  const provinces = new Set(
+    [...jobs,...talent].map(x=>x.province).filter(Boolean)
+  );
+  el("totalProvinces").textContent = provinces.size;
+
+  drawBars("jobsProvince",countBy(jobs,"province"));
+  drawBars("talentProvince",countBy(talent,"province"));
+  drawBars("jobsPosition",countBy(jobs,"category"));
+  drawBars("talentPosition",countBy(talent,"position"));
+  drawBars("jobsSeniority",countBy(jobs,"seniority"));
+  drawBars("talentSeniority",countBy(talent,"seniority"));
+  drawBars("jobsModality",countBy(jobs,"modality"));
+  drawBars("talentModality",countBy(talent,"modality"));
+}
+
+function openLogin() {
+  if(currentUser) {
+    if(confirm("¿Querés cerrar sesión?")) {
+      db.auth.signOut();
+    }
+    return;
+  }
+
+  el("loginMessage").textContent = "";
+  el("loginModal").classList.add("open");
+
+  if(!configured()) return;
+
+  const start = () => {
+    if(!el("loginModal").classList.contains("open")) return;
+    if(!window.turnstile) {
+      setTimeout(start,200);
       return;
     }
-
-    const talent = tab === 'talent';
-
-    const item = {
-      id:crypto.randomUUID(),
-      type:tab,
-      name:document.getElementById('name').value.trim(),
-      company:talent ? '' :
-        document.getElementById('company').value.trim(),
-      position:talent ?
-        document.getElementById('position').value : '',
-      location:document.getElementById('formLocation').value,
-      seniority:document.getElementById('formSeniority').value,
-      modality:document.getElementById('formModality').value,
-      description:talent ? '' :
-        document.getElementById('description').value.trim(),
-      link:u.href,
-      email:talent ? '' :
-        document.getElementById('email').value.trim(),
-      createdAt:Date.now()
-    };
-
-    try {
-      write([...read(),item]);
-    } catch {
-      alert('No se pudo guardar en este navegador.');
-      return;
+    if(captchaId===null) {
+      captchaId = window.turnstile.render("#captcha",{
+        sitekey:TURNSTILE_KEY,
+        theme:"light"
+      });
     }
+  };
+  start();
+}
 
-    closeForm();
-    render();
-    alert(
-      'Publicación creada por 60 días en este navegador. ' +
-      'Todavía no es visible para otras personas.'
-    );
+function closeLogin() {
+  el("loginModal").classList.remove("open");
+}
+
+el("loginForm").addEventListener("submit",async e => {
+  e.preventDefault();
+
+  if(!db) return;
+
+  const token = window.turnstile?.getResponse(captchaId);
+
+  if(!token) {
+    el("loginMessage").textContent =
+      "Completá la verificación de seguridad.";
+    return;
+  }
+
+  const button = el("sendLink");
+  button.disabled = true;
+  el("loginMessage").textContent = "Enviando correo...";
+
+  const {error} = await db.auth.signInWithOtp({
+    email:el("loginEmail").value.trim(),
+    options:{
+      emailRedirectTo:"https://avantp.github.io/HR-Tech/",
+      captchaToken:token
+    }
   });
 
-document.getElementById('modal').addEventListener('click',e => {
-  if(e.target.id === 'modal') closeForm();
+  button.disabled = false;
+
+  if(error) {
+    el("loginMessage").textContent =
+      "No se pudo enviar el enlace: "+error.message;
+    window.turnstile?.reset(captchaId);
+  } else {
+    el("loginMessage").textContent =
+      "Revisá tu correo. Te enviamos un enlace para ingresar.";
+    window.turnstile?.reset(captchaId);
+  }
 });
 
-document.addEventListener('keydown',e => {
-  if(e.key === 'Escape') closeForm();
+function openPublish() {
+  if(!currentUser) {
+    openLogin();
+    return;
+  }
+
+  const isTalent = tab==="talent";
+
+  el("publishForm").reset();
+  el("publishMessage").textContent = "";
+
+  el("formTitle").textContent =
+    isTalent ? "Publicar perfil" : "Publicar búsqueda";
+
+  el("nameLabel").firstChild.textContent =
+    isTalent ? "Nombre profesional" : "Puesto o título";
+
+  el("companyLabel").classList.toggle("hidden",isTalent);
+  el("company").required = !isTalent;
+
+  el("positionLabel").classList.toggle("hidden",!isTalent);
+  el("position").required = isTalent;
+
+  el("descriptionLabel").classList.toggle("hidden",isTalent);
+  el("description").required = !isTalent;
+
+  el("linkLabel").firstChild.textContent =
+    isTalent ? "Enlace a LinkedIn o portfolio"
+             : "Enlace para postularse";
+
+  el("publishModal").classList.add("open");
+}
+
+function closePublish() {
+  el("publishModal").classList.remove("open");
+}
+
+el("publishForm").addEventListener("submit",async e => {
+  e.preventDefault();
+
+  if(!db || !currentUser) {
+    openLogin();
+    return;
+  }
+
+  const url = el("link").value.trim();
+
+  if(!validURL(url)) {
+    el("publishMessage").textContent =
+      "Ingresá un enlace válido.";
+    return;
+  }
+
+  const common = {
+    owner_id:currentUser.id,
+    province:el("formLocation").value,
+    seniority:el("formSeniority").value,
+    modality:el("formModality").value
+  };
+
+  const isTalent = tab==="talent";
+
+  const data = isTalent ? {
+    ...common,
+    full_name:el("name").value.trim(),
+    position:el("position").value,
+    profile_url:url
+  } : {
+    ...common,
+    title:el("name").value.trim(),
+    company:el("company").value.trim(),
+    description:el("description").value.trim(),
+    application_url:url
+  };
+
+  const button = el("submitPost");
+  button.disabled = true;
+  el("publishMessage").textContent = "Guardando...";
+
+  const table = isTalent ? "talent_profiles" : "job_posts";
+  const {error} = await db.from(table).insert(data);
+
+  button.disabled = false;
+
+  if(error) {
+    console.error(error);
+    el("publishMessage").textContent =
+      "No se pudo publicar. Revisá los permisos y límites de Supabase. "+
+      error.message;
+    return;
+  }
+
+  closePublish();
+  await loadData();
+  alert("Publicación creada correctamente.");
 });
 
-window.addEventListener('storage',render);
-render();
+init();
 </script>
 </body>
 </html>
