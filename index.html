@@ -1,1 +1,333 @@
 
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>HR-Tech | Talento y oportunidades</title>
+<style>
+:root {
+  --primary:#6555e8;
+  --dark:#111a35;
+  --muted:#64748b;
+  --bg:#f5f7fc;
+}
+* {box-sizing:border-box}
+body {margin:0;font-family:Arial,sans-serif;background:var(--bg);color:var(--dark)}
+header {background:#fff;padding:20px 6%;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid #e5e7eb}
+.logo {font-size:26px;font-weight:800;color:var(--primary)}
+.hero {background:linear-gradient(120deg,#111a35,#4933a3);color:white;padding:65px 20px;text-align:center}
+.hero h1 {font-size:clamp(30px,5vw,48px);margin:0 0 15px}
+.hero p {color:#dbe3ff;font-size:17px}
+.container {max-width:1120px;margin:auto;padding:30px 20px}
+.tabs {display:flex;gap:12px;margin-bottom:25px}
+button {cursor:pointer;border:0;border-radius:10px;padding:13px 18px;font-weight:600}
+.tab {flex:1;background:white;color:var(--dark);border:1px solid #ddd}
+.tab.active,.primary {background:var(--primary);color:white}
+.filters {display:flex;gap:12px;flex-wrap:wrap;margin-bottom:25px}
+input,select,textarea {padding:13px;border:1px solid #dce1eb;border-radius:9px;font:inherit;width:100%;background:white}
+.filters input {flex:2;min-width:200px}
+.filters select {flex:1;min-width:150px}
+.topline {display:flex;justify-content:space-between;align-items:center;gap:15px;margin-bottom:20px;flex-wrap:wrap}
+.grid {display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:18px}
+.card {background:white;border:1px solid #e5e7eb;border-radius:15px;padding:22px;box-shadow:0 3px 12px #11182708}
+.card h3 {margin:8px 0}
+.card p {color:var(--muted);line-height:1.5}
+.tag {display:inline-block;background:#eeeaff;color:#5141bd;padding:6px 10px;border-radius:20px;font-size:12px;margin:4px 4px 4px 0}
+.card a {display:inline-block;margin-top:12px;background:var(--primary);color:white;text-decoration:none;padding:11px 15px;border-radius:8px}
+.modal {display:none;position:fixed;inset:0;background:#111827aa;z-index:10;overflow:auto;padding:25px 12px}
+.modal-content {max-width:580px;background:white;margin:20px auto;padding:28px;border-radius:18px}
+.modal-content h2 {margin-top:0}
+.form-grid {display:grid;gap:13px}
+.form-grid label {font-size:13px;font-weight:bold}
+.form-grid label input,.form-grid label select,.form-grid label textarea {margin-top:6px}
+.close {float:right;background:#f1f5f9}
+.note {font-size:12px;color:var(--muted);line-height:1.5}
+footer {text-align:center;padding:35px;color:var(--muted)}
+@media(max-width:600px){.tabs{flex-direction:column}.hero{padding:45px 20px}}
+</style>
+</head>
+<body>
+
+<header>
+ <div class="logo">HR-Tech</div>
+ <span>Talento + Oportunidades</span>
+</header>
+
+<section class="hero">
+ <h1>Conectamos talento con oportunidades</h1>
+ <p>Explorá búsquedas laborales o descubrí profesionales disponibles.</p>
+</section>
+
+<main class="container">
+ <div class="tabs">
+  <button id="jobsTab" class="tab active" onclick="changeTab('jobs')">💼 Búsquedas activas</button>
+  <button id="talentTab" class="tab" onclick="changeTab('talent')">👥 Talento disponible</button>
+ </div>
+
+ <div class="topline">
+  <div>
+   <h2 id="sectionTitle">Búsquedas activas</h2>
+   <p id="sectionDesc">Encontrá tu próxima oportunidad laboral.</p>
+  </div>
+  <button class="primary" id="publishBtn" onclick="openForm()">+ Publicar búsqueda</button>
+ </div>
+
+ <div class="filters">
+  <input id="search" placeholder="Buscar por puesto, tecnología o palabra clave" oninput="render()">
+  <select id="location" onchange="render()">
+   <option value="">Todas las ubicaciones</option>
+   <option>Argentina</option>
+   <option>Uruguay</option>
+   <option>Chile</option>
+   <option>México</option>
+   <option>España</option>
+   <option>Otro</option>
+  </select>
+  <select id="seniority" onchange="render()">
+   <option value="">Todos los seniorities</option>
+   <option>Trainee</option>
+   <option>Junior</option>
+   <option>Semisenior</option>
+   <option>Senior</option>
+   <option>Lead</option>
+  </select>
+  <select id="modality" onchange="render()">
+   <option value="">Todas las modalidades</option>
+   <option>Remoto</option>
+   <option>Híbrido</option>
+   <option>Presencial</option>
+  </select>
+ </div>
+
+ <p id="count"></p>
+ <div id="cards" class="grid"></div>
+</main>
+
+<div id="modal" class="modal">
+ <div class="modal-content">
+  <button class="close" onclick="closeForm()">✕</button>
+  <h2 id="formTitle">Nueva publicación</h2>
+  <p class="note">Tu publicación tendrá una vigencia de 60 días.</p>
+
+  <form id="publishForm" class="form-grid">
+   <label id="nameLabel">Puesto o título
+    <input id="name" required maxlength="100">
+   </label>
+   <label id="companyLabel">Empresa
+    <input id="company" required maxlength="100">
+   </label>
+   <label>Ubicación
+    <select id="formLocation" required>
+     <option value="">Seleccionar</option>
+     <option>Argentina</option><option>Uruguay</option>
+     <option>Chile</option><option>México</option>
+     <option>España</option><option>Otro</option>
+    </select>
+   </label>
+   <label>Seniority
+    <select id="formSeniority" required>
+     <option value="">Seleccionar</option>
+     <option>Trainee</option><option>Junior</option>
+     <option>Semisenior</option><option>Senior</option><option>Lead</option>
+    </select>
+   </label>
+   <label>Modalidad
+    <select id="formModality" required>
+     <option value="">Seleccionar</option>
+     <option>Remoto</option><option>Híbrido</option><option>Presencial</option>
+    </select>
+   </label>
+   <label>Tecnologías, habilidades o especialidad
+    <input id="skills" maxlength="250" placeholder="Ej.: Python, SaaS, Recruiting">
+   </label>
+   <label>Descripción
+    <textarea id="description" rows="4" required maxlength="2000"></textarea>
+   </label>
+   <label id="linkLabel">Enlace para postularse
+    <input id="link" type="url" required placeholder="https://...">
+   </label>
+   <label>Correo de contacto
+    <input id="email" type="email" required>
+   </label>
+   <label style="font-weight:normal">
+    <input id="consent" type="checkbox" required style="width:auto">
+    Confirmo que tengo autorización para publicar estos datos y acepto que sean visibles públicamente.
+   </label>
+   <button class="primary" type="submit">Publicar por 60 días</button>
+  </form>
+ </div>
+</div>
+
+<footer>HR-Tech © 2026 · Conectando personas y oportunidades</footer>
+
+<script>
+const KEY = "hrtech_publications_v1";
+const DAY = 86400000;
+const VALIDITY = 60 * DAY;
+let activeTab = "jobs";
+
+function getData() {
+ try {
+  const data = JSON.parse(localStorage.getItem(KEY) || "[]");
+  return Array.isArray(data) ? data : [];
+ } catch {
+  return [];
+ }
+}
+
+function saveData(data) {
+ localStorage.setItem(KEY, JSON.stringify(data));
+}
+
+function changeTab(tab) {
+ activeTab = tab;
+ document.getElementById("jobsTab").classList.toggle("active",tab==="jobs");
+ document.getElementById("talentTab").classList.toggle("active",tab==="talent");
+ document.getElementById("sectionTitle").textContent =
+  tab==="jobs" ? "Búsquedas activas" : "Talento disponible";
+ document.getElementById("sectionDesc").textContent =
+  tab==="jobs" ? "Encontrá tu próxima oportunidad laboral." :
+  "Descubrí profesionales abiertos a nuevas oportunidades.";
+ document.getElementById("publishBtn").textContent =
+  tab==="jobs" ? "+ Publicar búsqueda" : "+ Publicar perfil";
+ document.getElementById("search").value = "";
+ render();
+}
+
+function openForm() {
+ document.getElementById("publishForm").reset();
+ document.getElementById("formTitle").textContent =
+  activeTab==="jobs" ? "Publicar búsqueda laboral" : "Publicar perfil profesional";
+ document.getElementById("nameLabel").firstChild.textContent =
+  activeTab==="jobs" ? "Puesto o título" : "Nombre profesional";
+ document.getElementById("companyLabel").firstChild.textContent =
+  activeTab==="jobs" ? "Empresa" : "Puesto o especialidad";
+ document.getElementById("linkLabel").firstChild.textContent =
+  activeTab==="jobs" ? "Enlace para postularse" : "Enlace a LinkedIn o portfolio";
+ document.getElementById("modal").style.display = "block";
+}
+
+function closeForm() {
+ document.getElementById("modal").style.display = "none";
+}
+
+function el(tag,text,className) {
+ const node = document.createElement(tag);
+ if(text!==undefined) node.textContent = text;
+ if(className) node.className = className;
+ return node;
+}
+
+function render() {
+ const now = Date.now();
+ const all = getData();
+ const valid = all.filter(item =>
+  item && Number.isFinite(item.createdAt) &&
+  item.createdAt <= now &&
+  item.createdAt + VALIDITY > now
+ );
+ if(valid.length !== all.length) saveData(valid);
+
+ const search = document.getElementById("search").value.toLowerCase().trim();
+ const location = document.getElementById("location").value;
+ const seniority = document.getElementById("seniority").value;
+ const modality = document.getElementById("modality").value;
+
+ const results = valid.filter(item => {
+  const haystack = [item.name,item.company,item.skills,item.description]
+   .join(" ").toLowerCase();
+  return item.type===activeTab &&
+   (!search || haystack.includes(search)) &&
+   (!location || item.location===location) &&
+   (!seniority || item.seniority===seniority) &&
+   (!modality || item.modality===modality);
+ }).sort((a,b)=>b.createdAt-a.createdAt);
+
+ const cards = document.getElementById("cards");
+ cards.replaceChildren();
+ document.getElementById("count").textContent =
+  results.length + " publicaciones disponibles";
+
+ if(!results.length) {
+  cards.appendChild(el("p","Todavía no hay publicaciones con estos filtros."));
+  return;
+ }
+
+ results.forEach(item => {
+  const card = el("article",undefined,"card");
+  card.appendChild(el("span",
+   item.type==="jobs" ? "Oportunidad laboral" : "Perfil disponible","tag"));
+  card.appendChild(el("h3",item.name));
+  card.appendChild(el("p",item.company));
+  card.appendChild(el("p",item.location+" · "+item.modality+" · "+item.seniority));
+  if(item.skills) card.appendChild(el("span",item.skills,"tag"));
+  card.appendChild(el("p",item.description));
+
+  const expires = new Date(item.createdAt+VALIDITY);
+  card.appendChild(el("p","Vence: "+expires.toLocaleDateString("es-AR")));
+
+  try {
+   const url = new URL(item.link);
+   if(["https:","http:"].includes(url.protocol)) {
+    const a = el("a",item.type==="jobs" ? "Ver oportunidad" : "Ver perfil");
+    a.href = url.href;
+    a.target = "_blank";
+    a.rel = "noopener noreferrer";
+    card.appendChild(a);
+   }
+  } catch {}
+
+  cards.appendChild(card);
+ });
+}
+
+document.getElementById("publishForm").addEventListener("submit",event=>{
+ event.preventDefault();
+
+ const link = document.getElementById("link").value.trim();
+ let parsed;
+ try { parsed = new URL(link); } catch {
+  alert("Ingresá un enlace válido.");
+  return;
+ }
+ if(!["https:","http:"].includes(parsed.protocol)) {
+  alert("El enlace debe comenzar con https:// o http://");
+  return;
+ }
+
+ const item = {
+  id: crypto.randomUUID(),
+  type: activeTab,
+  name: document.getElementById("name").value.trim(),
+  company: document.getElementById("company").value.trim(),
+  location: document.getElementById("formLocation").value,
+  seniority: document.getElementById("formSeniority").value,
+  modality: document.getElementById("formModality").value,
+  skills: document.getElementById("skills").value.trim(),
+  description: document.getElementById("description").value.trim(),
+  link: parsed.href,
+  email: document.getElementById("email").value.trim(),
+  createdAt: Date.now()
+ };
+
+ try {
+  const data = getData();
+  data.push(item);
+  saveData(data);
+ } catch {
+  alert("No se pudo guardar. Revisá el almacenamiento del navegador.");
+  return;
+ }
+
+ closeForm();
+ render();
+ alert("¡Publicación creada! Estará disponible en este navegador durante 60 días.");
+});
+
+window.addEventListener("storage",render);
+render();
+</script>
+</body>
+</html>
+
