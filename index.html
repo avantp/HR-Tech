@@ -1,332 +1,596 @@
 
-<!DOCTYPE html>
+<!doctype html>
 <html lang="es">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
 <title>HR-Tech | Talento y oportunidades</title>
 <style>
 :root {
-  --primary:#6555e8;
-  --dark:#111a35;
-  --muted:#64748b;
-  --bg:#f5f7fc;
+  --ink:#171b49;
+  --purple:#5540cf;
+  --muted:#667085;
+  --line:#e5e7f1;
+  --bg:#f8f9fd;
 }
 * {box-sizing:border-box}
-body {margin:0;font-family:Arial,sans-serif;background:var(--bg);color:var(--dark)}
-header {background:#fff;padding:20px 6%;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid #e5e7eb}
-.logo {font-size:26px;font-weight:800;color:var(--primary)}
-.hero {background:linear-gradient(120deg,#111a35,#4933a3);color:white;padding:65px 20px;text-align:center}
-.hero h1 {font-size:clamp(30px,5vw,48px);margin:0 0 15px}
-.hero p {color:#dbe3ff;font-size:17px}
-.container {max-width:1120px;margin:auto;padding:30px 20px}
-.tabs {display:flex;gap:12px;margin-bottom:25px}
-button {cursor:pointer;border:0;border-radius:10px;padding:13px 18px;font-weight:600}
-.tab {flex:1;background:white;color:var(--dark);border:1px solid #ddd}
-.tab.active,.primary {background:var(--primary);color:white}
-.filters {display:flex;gap:12px;flex-wrap:wrap;margin-bottom:25px}
-input,select,textarea {padding:13px;border:1px solid #dce1eb;border-radius:9px;font:inherit;width:100%;background:white}
-.filters input {flex:2;min-width:200px}
-.filters select {flex:1;min-width:150px}
-.topline {display:flex;justify-content:space-between;align-items:center;gap:15px;margin-bottom:20px;flex-wrap:wrap}
-.grid {display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:18px}
-.card {background:white;border:1px solid #e5e7eb;border-radius:15px;padding:22px;box-shadow:0 3px 12px #11182708}
-.card h3 {margin:8px 0}
-.card p {color:var(--muted);line-height:1.5}
-.tag {display:inline-block;background:#eeeaff;color:#5141bd;padding:6px 10px;border-radius:20px;font-size:12px;margin:4px 4px 4px 0}
-.card a {display:inline-block;margin-top:12px;background:var(--primary);color:white;text-decoration:none;padding:11px 15px;border-radius:8px}
-.modal {display:none;position:fixed;inset:0;background:#111827aa;z-index:10;overflow:auto;padding:25px 12px}
-.modal-content {max-width:580px;background:white;margin:20px auto;padding:28px;border-radius:18px}
-.modal-content h2 {margin-top:0}
-.form-grid {display:grid;gap:13px}
-.form-grid label {font-size:13px;font-weight:bold}
-.form-grid label input,.form-grid label select,.form-grid label textarea {margin-top:6px}
-.close {float:right;background:#f1f5f9}
-.note {font-size:12px;color:var(--muted);line-height:1.5}
-footer {text-align:center;padding:35px;color:var(--muted)}
-@media(max-width:600px){.tabs{flex-direction:column}.hero{padding:45px 20px}}
+body {
+  margin:0;
+  font:15px/1.5 system-ui,-apple-system,Segoe UI,sans-serif;
+  color:var(--ink);
+  background:var(--bg);
+}
+button,input,select,textarea {font:inherit}
+button {cursor:pointer}
+header {background:white;border-bottom:1px solid var(--line)}
+.wrap {max-width:1140px;margin:auto;padding:0 22px}
+.nav {
+  height:76px;display:flex;align-items:center;
+  justify-content:space-between;gap:15px;
+}
+.brand {font-size:27px;font-weight:850;letter-spacing:-1px}
+.brand span {color:var(--purple)}
+.navlinks {display:flex;gap:20px}
+.navlinks button {
+  border:0;background:transparent;color:var(--ink);padding:10px;
+}
+.navlinks button.selected {
+  border-bottom:3px solid var(--purple);font-weight:750;
+}
+.btn {
+  border:0;border-radius:10px;background:var(--purple);
+  color:white;padding:12px 19px;font-weight:700;
+}
+.hero {background:white;border-bottom:1px solid var(--line)}
+.heroinner {
+  padding-top:60px;padding-bottom:60px;
+  display:grid;grid-template-columns:1.4fr 1fr;
+  gap:35px;align-items:center;
+}
+.eyebrow {
+  font-weight:800;color:var(--purple);
+  text-transform:uppercase;font-size:12px;letter-spacing:2px;
+}
+.hero h1 {
+  font-size:clamp(34px,5vw,53px);
+  line-height:1.1;letter-spacing:-2px;margin:12px 0;
+}
+.hero p {color:var(--muted);font-size:17px;max-width:500px}
+.art {
+  height:210px;border-radius:25px;
+  background:linear-gradient(145deg,#f3f0ff,#e8e8fc);
+  display:grid;place-items:center;
+}
+.art svg {width:75%;height:75%}
+.main {padding-top:30px;padding-bottom:65px}
+.tabs {display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap}
+.tab {
+  border:1px solid var(--line);background:white;
+  padding:12px 18px;border-radius:10px;
+  font-weight:700;color:var(--ink);
+}
+.tab.active {background:var(--purple);color:white}
+.filters {
+  display:grid;grid-template-columns:2fr repeat(3,1fr);
+  gap:12px;background:white;border:1px solid var(--line);
+  border-radius:15px;padding:18px;
+}
+.filters label,.form label {
+  display:grid;gap:6px;font-weight:700;font-size:13px;
+}
+.filters input,.filters select,
+.form input,.form select,.form textarea {
+  width:100%;min-width:0;padding:11px 12px;
+  border:1px solid #d8dbe8;border-radius:8px;
+  background:white;color:var(--ink);
+}
+.heading {
+  display:flex;justify-content:space-between;
+  align-items:center;gap:15px;margin:28px 0 18px;
+}
+.heading h2 {margin:0;font-size:24px}
+.heading p {margin:5px 0;color:var(--muted)}
+.results {display:grid;gap:11px}
+.result {
+  background:white;border:1px solid var(--line);
+  border-radius:13px;padding:20px;
+  display:flex;align-items:center;
+  justify-content:space-between;gap:16px;
+}
+.result h3 {margin:0 0 4px;font-size:18px}
+.result p {margin:0;color:var(--muted)}
+.meta {display:flex;flex-wrap:wrap;gap:7px;margin-top:11px}
+.pill {
+  border-radius:30px;background:#f1efff;
+  color:#4e3cbd;padding:4px 10px;font-size:12px;
+}
+.action {
+  display:inline-block;text-decoration:none;
+  color:var(--purple);border:1px solid #c9c3f2;
+  border-radius:9px;padding:10px 13px;
+  white-space:nowrap;font-weight:700;
+}
+.empty {
+  padding:40px;text-align:center;background:white;
+  border:1px dashed #c8c8df;border-radius:12px;
+  color:var(--muted);
+}
+.modal {
+  position:fixed;inset:0;background:#101331aa;
+  display:none;overflow-y:auto;padding:25px 12px;z-index:10;
+}
+.modal.open {display:block}
+.dialog {
+  background:white;max-width:590px;
+  margin:20px auto;padding:28px;border-radius:18px;
+}
+.dialoghead {
+  display:flex;justify-content:space-between;align-items:center;
+}
+.dialoghead h2 {margin:0}
+.close {
+  background:#f0f1f7;border:0;border-radius:8px;padding:8px 12px;
+}
+.form {display:grid;gap:15px;margin-top:18px}
+.note {color:var(--muted);font-size:13px}
+.check {
+  display:flex!important;align-items:start;
+  gap:10px;font-weight:400!important;
+}
+.check input {width:auto!important;margin-top:4px}
+.hidden {display:none!important}
+footer {text-align:center;padding:25px;color:var(--muted)}
+@media(max-width:800px) {
+  .heroinner {grid-template-columns:1fr}
+  .art {display:none}
+  .filters {grid-template-columns:1fr 1fr}
+  .navlinks {display:none}
+}
+@media(max-width:560px) {
+  .filters {grid-template-columns:1fr}
+  .result {align-items:start;flex-direction:column}
+  .heading {align-items:start;flex-direction:column}
+  .nav {height:65px}
+  .heroinner {padding-top:35px;padding-bottom:35px}
+}
 </style>
 </head>
 <body>
 
 <header>
- <div class="logo">HR-Tech</div>
- <span>Talento + Oportunidades</span>
+  <div class="wrap nav">
+    <div class="brand">HR<span>-Tech</span></div>
+    <nav class="navlinks">
+      <button id="navJobs" class="selected"
+        onclick="changeTab('jobs')">Búsquedas activas</button>
+      <button id="navTalent"
+        onclick="changeTab('talent')">Talento disponible</button>
+    </nav>
+    <button class="btn" onclick="openForm()" id="navPublish">
+      + Publicar búsqueda
+    </button>
+  </div>
 </header>
 
 <section class="hero">
- <h1>Conectamos talento con oportunidades</h1>
- <p>Explorá búsquedas laborales o descubrí profesionales disponibles.</p>
+  <div class="wrap heroinner">
+    <div>
+      <div class="eyebrow">Comunidad profesional</div>
+      <h1>Talento y oportunidades<br>en un solo lugar.</h1>
+      <p>Compartí búsquedas laborales o hacé visible tu perfil profesional.
+      Simple, directo y sin intermediarios.</p>
+    </div>
+    <div class="art" aria-hidden="true">
+      <svg viewBox="0 0 320 210" fill="none">
+        <rect x="42" y="23" width="228" height="155" rx="13"
+          fill="white" stroke="#6B59DB" stroke-width="5"/>
+        <rect x="61" y="43" width="188" height="16" rx="8"
+          fill="#EDEAFF"/>
+        <circle cx="107" cy="101" r="23"
+          stroke="#6B59DB" stroke-width="6"/>
+        <path d="M69 150c8-26 68-26 76 0"
+          stroke="#6B59DB" stroke-width="6" stroke-linecap="round"/>
+        <path d="M170 95h64M170 115h52M170 135h37"
+          stroke="#B6ADEE" stroke-width="8" stroke-linecap="round"/>
+        <circle cx="253" cy="156" r="28"
+          fill="#EEEAFE" stroke="#6B59DB" stroke-width="6"/>
+        <path d="m272 177 24 23"
+          stroke="#6B59DB" stroke-width="9" stroke-linecap="round"/>
+      </svg>
+    </div>
+  </div>
 </section>
 
-<main class="container">
- <div class="tabs">
-  <button id="jobsTab" class="tab active" onclick="changeTab('jobs')">💼 Búsquedas activas</button>
-  <button id="talentTab" class="tab" onclick="changeTab('talent')">👥 Talento disponible</button>
- </div>
-
- <div class="topline">
-  <div>
-   <h2 id="sectionTitle">Búsquedas activas</h2>
-   <p id="sectionDesc">Encontrá tu próxima oportunidad laboral.</p>
+<main class="wrap main">
+  <div class="tabs">
+    <button id="tabJobs" class="tab active"
+      onclick="changeTab('jobs')">▣ Búsquedas activas</button>
+    <button id="tabTalent" class="tab"
+      onclick="changeTab('talent')">♙ Talento disponible</button>
   </div>
-  <button class="primary" id="publishBtn" onclick="openForm()">+ Publicar búsqueda</button>
- </div>
 
- <div class="filters">
-  <input id="search" placeholder="Buscar por puesto, tecnología o palabra clave" oninput="render()">
-  <select id="location" onchange="render()">
-   <option value="">Todas las ubicaciones</option>
-   <option>Argentina</option>
-   <option>Uruguay</option>
-   <option>Chile</option>
-   <option>México</option>
-   <option>España</option>
-   <option>Otro</option>
-  </select>
-  <select id="seniority" onchange="render()">
-   <option value="">Todos los seniorities</option>
-   <option>Trainee</option>
-   <option>Junior</option>
-   <option>Semisenior</option>
-   <option>Senior</option>
-   <option>Lead</option>
-  </select>
-  <select id="modality" onchange="render()">
-   <option value="">Todas las modalidades</option>
-   <option>Remoto</option>
-   <option>Híbrido</option>
-   <option>Presencial</option>
-  </select>
- </div>
+  <div class="filters">
+    <label>Buscar
+      <input id="search" placeholder="Puesto, empresa o palabra clave"
+        oninput="render()">
+    </label>
+    <label>Ubicación
+      <select id="location" onchange="render()"></select>
+    </label>
+    <label>Seniority
+      <select id="seniority" onchange="render()"></select>
+    </label>
+    <label>Modalidad
+      <select id="modality" onchange="render()">
+        <option value="">Todas las modalidades</option>
+        <option>Remoto</option>
+        <option>Híbrido</option>
+        <option>Presencial</option>
+      </select>
+    </label>
+  </div>
 
- <p id="count"></p>
- <div id="cards" class="grid"></div>
+  <div class="heading">
+    <div>
+      <h2 id="sectionTitle">Búsquedas activas</h2>
+      <p id="count">0 publicaciones</p>
+    </div>
+    <button class="btn" id="publishBtn" onclick="openForm()">
+      + Publicar búsqueda
+    </button>
+  </div>
+  <div id="results" class="results"></div>
 </main>
 
-<div id="modal" class="modal">
- <div class="modal-content">
-  <button class="close" onclick="closeForm()">✕</button>
-  <h2 id="formTitle">Nueva publicación</h2>
-  <p class="note">Tu publicación tendrá una vigencia de 60 días.</p>
+<div class="modal" id="modal" role="dialog"
+  aria-modal="true" aria-labelledby="formTitle">
+  <div class="dialog">
+    <div class="dialoghead">
+      <h2 id="formTitle">Publicar búsqueda</h2>
+      <button class="close" onclick="closeForm()"
+        aria-label="Cerrar">✕</button>
+    </div>
+    <p class="note">La publicación vence automáticamente a los 60 días.</p>
 
-  <form id="publishForm" class="form-grid">
-   <label id="nameLabel">Puesto o título
-    <input id="name" required maxlength="100">
-   </label>
-   <label id="companyLabel">Empresa
-    <input id="company" required maxlength="100">
-   </label>
-   <label>Ubicación
-    <select id="formLocation" required>
-     <option value="">Seleccionar</option>
-     <option>Argentina</option><option>Uruguay</option>
-     <option>Chile</option><option>México</option>
-     <option>España</option><option>Otro</option>
-    </select>
-   </label>
-   <label>Seniority
-    <select id="formSeniority" required>
-     <option value="">Seleccionar</option>
-     <option>Trainee</option><option>Junior</option>
-     <option>Semisenior</option><option>Senior</option><option>Lead</option>
-    </select>
-   </label>
-   <label>Modalidad
-    <select id="formModality" required>
-     <option value="">Seleccionar</option>
-     <option>Remoto</option><option>Híbrido</option><option>Presencial</option>
-    </select>
-   </label>
-   <label>Tecnologías, habilidades o especialidad
-    <input id="skills" maxlength="250" placeholder="Ej.: Python, SaaS, Recruiting">
-   </label>
-   <label>Descripción
-    <textarea id="description" rows="4" required maxlength="2000"></textarea>
-   </label>
-   <label id="linkLabel">Enlace para postularse
-    <input id="link" type="url" required placeholder="https://...">
-   </label>
-   <label>Correo de contacto
-    <input id="email" type="email" required>
-   </label>
-   <label style="font-weight:normal">
-    <input id="consent" type="checkbox" required style="width:auto">
-    Confirmo que tengo autorización para publicar estos datos y acepto que sean visibles públicamente.
-   </label>
-   <button class="primary" type="submit">Publicar por 60 días</button>
-  </form>
- </div>
+    <form class="form" id="publishForm">
+      <label id="nameLabel">Puesto o título
+        <input id="name" required maxlength="100">
+      </label>
+
+      <label id="companyLabel">Empresa
+        <input id="company" required maxlength="100">
+      </label>
+
+      <label id="positionLabel" class="hidden">Puesto
+        <select id="position"></select>
+      </label>
+
+      <label>Ubicación
+        <select id="formLocation" required></select>
+      </label>
+
+      <label>Seniority
+        <select id="formSeniority" required></select>
+      </label>
+
+      <label>Modalidad
+        <select id="formModality" required>
+          <option value="">Seleccionar</option>
+          <option>Remoto</option>
+          <option>Híbrido</option>
+          <option>Presencial</option>
+        </select>
+      </label>
+
+      <label id="descriptionLabel">Descripción
+        <textarea id="description" rows="4" maxlength="2000"></textarea>
+      </label>
+
+      <label id="linkLabel">Enlace para postularse
+        <input id="link" type="url" required placeholder="https://...">
+      </label>
+
+      <label id="emailLabel">Correo de contacto
+        <input id="email" type="email">
+      </label>
+
+      <label class="check">
+        <input type="checkbox" id="consent" required>
+        Confirmo que tengo autorización para publicar esta información
+        y acepto que sea visible públicamente.
+      </label>
+
+      <button class="btn" type="submit">Publicar por 60 días</button>
+    </form>
+  </div>
 </div>
 
-<footer>HR-Tech © 2026 · Conectando personas y oportunidades</footer>
+<footer>HR-Tech · Talento y oportunidades · 2026</footer>
 
 <script>
-const KEY = "hrtech_publications_v1";
-const DAY = 86400000;
-const VALIDITY = 60 * DAY;
-let activeTab = "jobs";
+const PROVINCES = [
+  'Buenos Aires','CABA','Catamarca','Chaco','Chubut',
+  'Córdoba','Corrientes','Entre Ríos','Formosa','Jujuy',
+  'La Pampa','La Rioja','Mendoza','Misiones','Neuquén',
+  'Río Negro','Salta','San Juan','San Luis','Santa Cruz',
+  'Santa Fe','Santiago del Estero','Tierra del Fuego','Tucumán'
+];
 
-function getData() {
- try {
-  const data = JSON.parse(localStorage.getItem(KEY) || "[]");
-  return Array.isArray(data) ? data : [];
- } catch {
-  return [];
- }
+const LEVELS = [
+  'Trainee','Junior','Semisenior','Senior','Lead','Manager'
+];
+
+const POSITIONS = [
+  'Administracion y Finanzas',
+  'People',
+  'Soporte tecnico',
+  'Infraestructura',
+  'Seguridad informatica',
+  'Software engineer',
+  'C Level',
+  'Sales',
+  'Customer Success',
+  'Marketing'
+];
+
+const KEY = 'hrtech_publications_v1';
+const VALIDITY = 60 * 86400000;
+let tab = 'jobs';
+
+function options(id,items,first) {
+  const s = document.getElementById(id);
+  s.replaceChildren();
+  const o = document.createElement('option');
+  o.value = '';
+  o.textContent = first;
+  s.append(o);
+  items.forEach(v => {
+    const x = document.createElement('option');
+    x.value = v;
+    x.textContent = v;
+    s.append(x);
+  });
 }
 
-function saveData(data) {
- localStorage.setItem(KEY, JSON.stringify(data));
+options('location',PROVINCES,'Todas las ubicaciones');
+options('formLocation',PROVINCES,'Seleccionar ubicación');
+options('seniority',LEVELS,'Seniority');
+options('formSeniority',LEVELS,'Seleccionar seniority');
+options('position',POSITIONS,'Seleccionar puesto');
+
+function read() {
+  try {
+    const a = JSON.parse(localStorage.getItem(KEY) || '[]');
+    return Array.isArray(a) ? a : [];
+  } catch {
+    return [];
+  }
 }
 
-function changeTab(tab) {
- activeTab = tab;
- document.getElementById("jobsTab").classList.toggle("active",tab==="jobs");
- document.getElementById("talentTab").classList.toggle("active",tab==="talent");
- document.getElementById("sectionTitle").textContent =
-  tab==="jobs" ? "Búsquedas activas" : "Talento disponible";
- document.getElementById("sectionDesc").textContent =
-  tab==="jobs" ? "Encontrá tu próxima oportunidad laboral." :
-  "Descubrí profesionales abiertos a nuevas oportunidades.";
- document.getElementById("publishBtn").textContent =
-  tab==="jobs" ? "+ Publicar búsqueda" : "+ Publicar perfil";
- document.getElementById("search").value = "";
- render();
+function write(a) {
+  localStorage.setItem(KEY,JSON.stringify(a));
+}
+
+function changeTab(t) {
+  tab = t;
+  ['Jobs','Talent'].forEach((x,i) => {
+    const on = i === 0 ? t === 'jobs' : t === 'talent';
+    document.getElementById('tab'+x).classList.toggle('active',on);
+    document.getElementById('nav'+x).classList.toggle('selected',on);
+  });
+  document.getElementById('sectionTitle').textContent =
+    t === 'jobs' ? 'Búsquedas activas' : 'Talento disponible';
+  document.getElementById('publishBtn').textContent =
+  document.getElementById('navPublish').textContent =
+    t === 'jobs' ? '+ Publicar búsqueda' : '+ Publicar perfil';
+  document.getElementById('search').value = '';
+  render();
 }
 
 function openForm() {
- document.getElementById("publishForm").reset();
- document.getElementById("formTitle").textContent =
-  activeTab==="jobs" ? "Publicar búsqueda laboral" : "Publicar perfil profesional";
- document.getElementById("nameLabel").firstChild.textContent =
-  activeTab==="jobs" ? "Puesto o título" : "Nombre profesional";
- document.getElementById("companyLabel").firstChild.textContent =
-  activeTab==="jobs" ? "Empresa" : "Puesto o especialidad";
- document.getElementById("linkLabel").firstChild.textContent =
-  activeTab==="jobs" ? "Enlace para postularse" : "Enlace a LinkedIn o portfolio";
- document.getElementById("modal").style.display = "block";
+  document.getElementById('publishForm').reset();
+  const talent = tab === 'talent';
+
+  document.getElementById('formTitle').textContent =
+    talent ? 'Publicar perfil' : 'Publicar búsqueda';
+  document.getElementById('nameLabel').firstChild.textContent =
+    talent ? 'Nombre profesional' : 'Puesto o título';
+
+  document.getElementById('companyLabel')
+    .classList.toggle('hidden',talent);
+  document.getElementById('company').required = !talent;
+
+  document.getElementById('positionLabel')
+    .classList.toggle('hidden',!talent);
+  document.getElementById('position').required = talent;
+
+  document.getElementById('descriptionLabel')
+    .classList.toggle('hidden',talent);
+  document.getElementById('description').required = !talent;
+
+  document.getElementById('emailLabel')
+    .classList.toggle('hidden',talent);
+
+  document.getElementById('linkLabel').firstChild.textContent =
+    talent ? 'Enlace a LinkedIn o portfolio' : 'Enlace para postularse';
+
+  document.getElementById('modal').classList.add('open');
 }
 
 function closeForm() {
- document.getElementById("modal").style.display = "none";
+  document.getElementById('modal').classList.remove('open');
 }
 
-function el(tag,text,className) {
- const node = document.createElement(tag);
- if(text!==undefined) node.textContent = text;
- if(className) node.className = className;
- return node;
+function node(tag,text,cls) {
+  const n = document.createElement(tag);
+  if(text !== undefined) n.textContent = text;
+  if(cls) n.className = cls;
+  return n;
 }
 
 function render() {
- const now = Date.now();
- const all = getData();
- const valid = all.filter(item =>
-  item && Number.isFinite(item.createdAt) &&
-  item.createdAt <= now &&
-  item.createdAt + VALIDITY > now
- );
- if(valid.length !== all.length) saveData(valid);
+  const now = Date.now();
+  const data = read();
 
- const search = document.getElementById("search").value.toLowerCase().trim();
- const location = document.getElementById("location").value;
- const seniority = document.getElementById("seniority").value;
- const modality = document.getElementById("modality").value;
+  const valid = data.filter(x =>
+    x &&
+    Number.isFinite(x.createdAt) &&
+    x.createdAt <= now &&
+    x.createdAt + VALIDITY > now
+  );
 
- const results = valid.filter(item => {
-  const haystack = [item.name,item.company,item.skills,item.description]
-   .join(" ").toLowerCase();
-  return item.type===activeTab &&
-   (!search || haystack.includes(search)) &&
-   (!location || item.location===location) &&
-   (!seniority || item.seniority===seniority) &&
-   (!modality || item.modality===modality);
- }).sort((a,b)=>b.createdAt-a.createdAt);
+  if(valid.length !== data.length) {
+    try { write(valid); } catch {}
+  }
 
- const cards = document.getElementById("cards");
- cards.replaceChildren();
- document.getElementById("count").textContent =
-  results.length + " publicaciones disponibles";
+  const q = document.getElementById('search').value
+    .toLocaleLowerCase('es').trim();
+  const loc = document.getElementById('location').value;
+  const lev = document.getElementById('seniority').value;
+  const mod = document.getElementById('modality').value;
 
- if(!results.length) {
-  cards.appendChild(el("p","Todavía no hay publicaciones con estos filtros."));
-  return;
- }
+  const rows = valid.filter(x =>
+    x.type === tab &&
+    (!loc || x.location === loc) &&
+    (!lev || x.seniority === lev) &&
+    (!mod || x.modality === mod) &&
+    (!q || [
+      x.name,x.company,x.position,x.description,x.skills
+    ].join(' ').toLocaleLowerCase('es').includes(q))
+  ).sort((a,b) => b.createdAt-a.createdAt);
 
- results.forEach(item => {
-  const card = el("article",undefined,"card");
-  card.appendChild(el("span",
-   item.type==="jobs" ? "Oportunidad laboral" : "Perfil disponible","tag"));
-  card.appendChild(el("h3",item.name));
-  card.appendChild(el("p",item.company));
-  card.appendChild(el("p",item.location+" · "+item.modality+" · "+item.seniority));
-  if(item.skills) card.appendChild(el("span",item.skills,"tag"));
-  card.appendChild(el("p",item.description));
+  document.getElementById('count').textContent =
+    rows.length + ' publicaciones disponibles';
 
-  const expires = new Date(item.createdAt+VALIDITY);
-  card.appendChild(el("p","Vence: "+expires.toLocaleDateString("es-AR")));
+  const root = document.getElementById('results');
+  root.replaceChildren();
 
-  try {
-   const url = new URL(item.link);
-   if(["https:","http:"].includes(url.protocol)) {
-    const a = el("a",item.type==="jobs" ? "Ver oportunidad" : "Ver perfil");
-    a.href = url.href;
-    a.target = "_blank";
-    a.rel = "noopener noreferrer";
-    card.appendChild(a);
-   }
-  } catch {}
+  if(!rows.length) {
+    root.append(node(
+      'div',
+      'Todavía no hay publicaciones con estos filtros. ¡Podés crear la primera!',
+      'empty'
+    ));
+    return;
+  }
 
-  cards.appendChild(card);
- });
+  rows.forEach(x => {
+    const card = node('article',undefined,'result');
+    const left = node('div');
+
+    left.append(node(
+      'h3',
+      x.type === 'talent'
+        ? (x.position || x.company || 'Perfil profesional')
+        : x.name
+    ));
+
+    left.append(node(
+      'p',x.type === 'talent' ? x.name : x.company
+    ));
+
+    const meta = node('div',undefined,'meta');
+
+    [
+      x.location,
+      x.seniority,
+      x.modality,
+      'Vence: ' +
+        new Date(x.createdAt+VALIDITY).toLocaleDateString('es-AR')
+    ].filter(Boolean).forEach(s =>
+      meta.append(node('span',s,'pill'))
+    );
+
+    left.append(meta);
+
+    if(x.type === 'jobs' && x.description) {
+      left.append(node('p',x.description));
+    }
+
+    card.append(left);
+
+    try {
+      const u = new URL(x.link);
+      if(['http:','https:'].includes(u.protocol)) {
+        const a = node(
+          'a',
+          x.type === 'jobs' ? 'Ver oportunidad ↗' : 'Ver perfil ↗',
+          'action'
+        );
+        a.href = u.href;
+        a.target = '_blank';
+        a.rel = 'noopener noreferrer';
+        card.append(a);
+      }
+    } catch {}
+
+    root.append(card);
+  });
 }
 
-document.getElementById("publishForm").addEventListener("submit",event=>{
- event.preventDefault();
+document.getElementById('publishForm')
+  .addEventListener('submit',e => {
+    e.preventDefault();
 
- const link = document.getElementById("link").value.trim();
- let parsed;
- try { parsed = new URL(link); } catch {
-  alert("Ingresá un enlace válido.");
-  return;
- }
- if(!["https:","http:"].includes(parsed.protocol)) {
-  alert("El enlace debe comenzar con https:// o http://");
-  return;
- }
+    let u;
+    try {
+      u = new URL(document.getElementById('link').value.trim());
+      if(!['http:','https:'].includes(u.protocol)) throw Error();
+    } catch {
+      alert('Ingresá un enlace válido que comience con https://');
+      return;
+    }
 
- const item = {
-  id: crypto.randomUUID(),
-  type: activeTab,
-  name: document.getElementById("name").value.trim(),
-  company: document.getElementById("company").value.trim(),
-  location: document.getElementById("formLocation").value,
-  seniority: document.getElementById("formSeniority").value,
-  modality: document.getElementById("formModality").value,
-  skills: document.getElementById("skills").value.trim(),
-  description: document.getElementById("description").value.trim(),
-  link: parsed.href,
-  email: document.getElementById("email").value.trim(),
-  createdAt: Date.now()
- };
+    const talent = tab === 'talent';
 
- try {
-  const data = getData();
-  data.push(item);
-  saveData(data);
- } catch {
-  alert("No se pudo guardar. Revisá el almacenamiento del navegador.");
-  return;
- }
+    const item = {
+      id:crypto.randomUUID(),
+      type:tab,
+      name:document.getElementById('name').value.trim(),
+      company:talent ? '' :
+        document.getElementById('company').value.trim(),
+      position:talent ?
+        document.getElementById('position').value : '',
+      location:document.getElementById('formLocation').value,
+      seniority:document.getElementById('formSeniority').value,
+      modality:document.getElementById('formModality').value,
+      description:talent ? '' :
+        document.getElementById('description').value.trim(),
+      link:u.href,
+      email:talent ? '' :
+        document.getElementById('email').value.trim(),
+      createdAt:Date.now()
+    };
 
- closeForm();
- render();
- alert("¡Publicación creada! Estará disponible en este navegador durante 60 días.");
+    try {
+      write([...read(),item]);
+    } catch {
+      alert('No se pudo guardar en este navegador.');
+      return;
+    }
+
+    closeForm();
+    render();
+    alert(
+      'Publicación creada por 60 días en este navegador. ' +
+      'Todavía no es visible para otras personas.'
+    );
+  });
+
+document.getElementById('modal').addEventListener('click',e => {
+  if(e.target.id === 'modal') closeForm();
 });
 
-window.addEventListener("storage",render);
+document.addEventListener('keydown',e => {
+  if(e.key === 'Escape') closeForm();
+});
+
+window.addEventListener('storage',render);
 render();
+</script>
+</body>
+</html>
+
 </script>
 </body>
 </html>
